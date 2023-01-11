@@ -15,16 +15,15 @@ class User < ActiveRecord::Base
 
   validates :name, presence: true, length: { maximum: 50 }
   validates :role, presence: true, inclusion: { in: roles.keys }, allow_nil: false, allow_blank: false
-  validates :email, presence: true, length: { maximum: 255 }, format: { with: URI::MailTo::EMAIL_REGEXP }, uniqueness: { case_sensitive: false }
+  validates :email, presence: true, length: { maximum: 255 }, format: { with: URI::MailTo::EMAIL_REGEXP },
+                    uniqueness: { case_sensitive: false }
 
   has_many :events, dependent: :destroy
   has_many :tickets, dependent: :destroy
   has_many :orders, dependent: :destroy
   has_many :payments, dependent: :destroy
 
-
   def send_welcome_email
     UserMailer.welcome_email(self).deliver_now
   end
-
 end
