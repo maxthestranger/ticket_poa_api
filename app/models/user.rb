@@ -3,6 +3,8 @@
 class User < ActiveRecord::Base
   extend Devise::Models
 
+  after_create :send_welcome_email
+
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
   devise :database_authenticatable, :registerable,
@@ -20,4 +22,10 @@ class User < ActiveRecord::Base
   has_many :tickets, dependent: :destroy
   has_many :orders, dependent: :destroy
   has_many :payments, dependent: :destroy
+
+
+  def send_welcome_email
+    UserMailer.welcome_email(self).deliver_now
+  end
+
 end
