@@ -9,9 +9,10 @@ RSpec.describe UserMailer, type: :mailer do
       expect(mail.subject).to eq("Welcome to Ticket Poa")
       expect(mail.to).to eq([user.email])
       expect(mail.from).to eq(["noreply@ticketpoa.com"])
-
+    end
 
     it "renders the body" do
       expect(mail.body.encoded).to match("Welcome to ticketpoa.com")
     end
+  end
 end
