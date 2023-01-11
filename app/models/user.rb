@@ -14,7 +14,7 @@ class User < ActiveRecord::Base
   enum role: [:admin, :organizer, :buyer]
 
   validates :name, presence: true, length: { maximum: 50 }
-  validates :role, presence: true, inclusion: { in: roles.keys }, allow_nil: false, allow_blank: false, numericality: { only_integer: true }
+  validates :role, presence: true, inclusion: { in: roles.keys }, allow_nil: false, allow_blank: false
   validates :email, presence: true, length: { maximum: 255 }, format: { with: URI::MailTo::EMAIL_REGEXP }, uniqueness: { case_sensitive: false }
   validates :password, presence: true, length: { minimum: 6 }, allow_nil: false, allow_blank: false
 
