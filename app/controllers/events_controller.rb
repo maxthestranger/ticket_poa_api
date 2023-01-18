@@ -17,13 +17,13 @@ class EventsController < ApplicationController
   end
 
   def create
-    event_details = event_params.merge(user_id: current_user.id)
-    @event = Event.new(event_details)
-    if @event.save
-      render json: @event
-    else
-      render json: @event.errors, status: :unprocessable_entity
+    #   create event and tickets in one transaction
+    @event = Event.new(event_params.merge(user: current_user))
+    @event.save!
+    @tickets = params[:tickets].map do |ticket|
+      @event.tickets.create!(ticket.permit(:name, :quantity, :price, :detail))
     end
+    render json: @event, include: :tickets
   end
 
   def update
