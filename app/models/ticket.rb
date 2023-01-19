@@ -5,6 +5,7 @@ class Ticket < ApplicationRecord
   validates :price, presence: true
   validates :quantity, presence: true, numericality: { only_integer: true, greater_than: 0 }
   validates :event_id, presence: true
+  validates :detail, presence: true
 
   def sold_out?
     self.sold_out

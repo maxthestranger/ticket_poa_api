@@ -71,20 +71,19 @@ categories = [
 ]
 
 categories.each do |category|
-  Category.create(category)
+  Category.create!(category)
 end
 
-Event.create(
-  title: "Theatre",
-  type: "offline",
-  description: 'where western theatre originated',
-  venue_name: 'Theatre',
-  venue_url: 'https://www.google.com/maps/place/1+Theatre+Square,+London+WC2H+8DP',
-  start_date: '2021-01-01',
-  end_date: '2021-01-01',
-  poster: 'theatre.jpg',
-  category_id: 3,
-  user_id: 1,
-  video_url: 'https://www.youtube.com/watch?v=5qap5aO4i9A',
-  live: true,
-)
+# Event.create(
+#   "title": "Theatre",
+#   "type": "offline",
+#   "description": "where western theatre originated",
+#   "venue_name": "Theatre",
+#   "venue_url": "https://www.google.com/maps/place/1+Theatre+Square,+London+WC2H+8DP",
+#   "start_date": "2021-01-01",
+#   "end_date": "2021-01-01",
+#   "poster": "theatre.jpg",
+#   "category_id": 3,
+#   "video_url": "https://www.youtube.com/watch?v=5qap5aO4i9A",
+#   "live": true,
+# )

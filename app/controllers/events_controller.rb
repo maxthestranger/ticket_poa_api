@@ -18,30 +18,41 @@ class EventsController < ApplicationController
 
   def create
     #   create event and tickets in one transaction
-    @event = Event.new(event_params.merge(user: current_user))
-    @event.save!
-    @tickets = params[:tickets].map do |ticket|
-      @event.tickets.create!(ticket.permit(:name, :quantity, :price, :detail))
+    @event = current_user.events.create!(event_params)
+    @tickets = ticket_params.map do |ticket|
+      @event.tickets.create!(ticket)
     end
+
+    Event.increase_category_event_count(@event.category_id)
+
     render json: @event, include: :tickets
   end
 
   def update
-    if @event.update(event_params)
-      render json: @event
-    else
-      render json: @event.errors, status: :unprocessable_entity
+    # update events and tickets in one transaction
+    @event.update!(event_params)
+    @event.tickets.destroy_all
+    @tickets = ticket_params.map do |ticket|
+      @event.tickets.create!(ticket)
     end
+    render json: @event, include: :tickets
   end
 
   def destroy
     @event.destroy
+    Event.decrease_category_event_count(@event.category_id)
   end
 
   private
 
   def event_params
     params.require(:event).permit(:title, :type, :description, :venue_url, :poster, :venue_name, :video_url, :start_date, :end_date, :live, :category_id)
+  end
+
+  def ticket_params
+    params.require(:tickets).map do |ticket|
+      ticket.permit(:name, :quantity, :price, :detail)
+    end
   end
 
   def set_event

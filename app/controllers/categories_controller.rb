@@ -1,6 +1,7 @@
 class CategoriesController < ApplicationController
   before_action :authenticate_user!, only: %i[create update destroy]
   before_action :set_category, only: %i[show update destroy]
+  
   def index
     @categories = Category.all
 
@@ -12,11 +13,16 @@ class CategoriesController < ApplicationController
   end
 
   def create
-    @category = Category.new(category_params)
-    if @category.save
-      render json: @category
+    if current_user.admin?
+      @category = Category.new(category_params)
+
+      if @category.save
+        render json: @category, status: :created, location: @category
+      else
+        render json: @category.errors, status: :unprocessable_entity
+      end
     else
-      render json: @category.errors, status: :unprocessable_entity
+      render json: { error: 'You are not authorized to create a category' }, status: :unauthorized
     end
   end
 

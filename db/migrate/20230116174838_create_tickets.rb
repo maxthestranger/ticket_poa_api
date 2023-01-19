@@ -5,7 +5,7 @@ class CreateTickets < ActiveRecord::Migration[7.0]
       t.integer :quantity
       t.decimal :price
       t.text :detail
-      t.boolean :sold_out
+      t.boolean :sold_out, default: false
       t.references :event, null: false, foreign_key: true
 
       t.timestamps
