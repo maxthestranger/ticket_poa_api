@@ -13,48 +13,40 @@ class EventsController < ApplicationController
   end
 
   def show
-    render json: @event, include: :category
+    render json: @event, include: [:tickets, :category]
   end
 
   def create
-    #   create event and tickets in one transaction
-    @event = current_user.events.create!(event_params)
-    @tickets = ticket_params.map do |ticket|
-      @event.tickets.create!(ticket)
+    @event = Event.new(event_params.merge(user_id: current_user.id))
+
+    if @event.save
+      @event.increase_category_event_count
+      render json: @event, include: :tickets
+    else
+      render json: @event.errors, status: :unprocessable_entity
     end
-
-    Event.increase_category_event_count(@event.category_id)
-
-    render json: @event, include: :tickets
   end
 
   def update
-    # update events and tickets in one transaction
-    @event.update!(event_params)
-    @event.tickets.destroy_all
-    @tickets = ticket_params.map do |ticket|
-      @event.tickets.create!(ticket)
+    if @event.update(event_params)
+
+      render json: @event, include: :tickets
+    else
+      render json: @event.errors, status: :unprocessable_entity
     end
-    render json: @event, include: :tickets
   end
 
   def destroy
     @event.destroy
-    Event.decrease_category_event_count(@event.category_id)
+    @event.decrease_category_event_count
   end
 
   private
 
   def event_params
-    params.require(:event).permit(:title, :type, :description, :venue_url, :poster, :venue_name, :video_url, :start_date, :end_date, :live, :category_id)
+    params.require(:event).permit(:title, :offline, :description, :venue_url, :poster, :venue_name, :video_url, :start_date, :end_date, :live, :category_id, tickets_attributes: %i[name price quantity detail])
   end
-
-  def ticket_params
-    params.require(:tickets).map do |ticket|
-      ticket.permit(:name, :quantity, :price, :detail)
-    end
-  end
-
+  
   def set_event
     @event = Event.find(params[:id])
   end

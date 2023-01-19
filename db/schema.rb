@@ -24,7 +24,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_01_16_174838) do
 
   create_table "events", force: :cascade do |t|
     t.string "title"
-    t.string "type"
+    t.boolean "offline"
     t.text "description"
     t.string "venue_url"
     t.string "venue_name"
@@ -46,7 +46,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_01_16_174838) do
     t.integer "quantity"
     t.decimal "price"
     t.text "detail"
-    t.boolean "sold_out"
+    t.boolean "sold_out", default: false
     t.bigint "event_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
